@@ -1,0 +1,71 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <cstdlib>
+using namespace std;
+
+struct Objeto { string nombre; double valor, peso; };
+
+bool mejor(const Objeto &a, const Objeto &b) {
+    return a.valor / a.peso > b.valor / b.peso;
+}
+
+void mochila() {
+    int n; double cap;
+    cout << "Capacidad maxima: "; cin >> cap;
+    cout << "Cantidad de objetos: "; cin >> n;
+
+    vector<Objeto> o(n);
+    for (int i = 0; i < n; i++) {
+        cout << "Nombre valor peso: ";
+        cin >> o[i].nombre >> o[i].valor >> o[i].peso;
+    }
+
+    sort(o.begin(), o.end(), mejor);      // Greedy: mejor rendimiento primero
+
+    double total = 0;
+    cout << "Objetos seleccionados:\n";
+    for (int i = 0; i < n && cap > 0; i++) {
+        if (o[i].peso <= cap) {           // cabe completo
+            cout << o[i].nombre << " completo\n";
+            cap -= o[i].peso;
+            total += o[i].valor;
+        } else {                          // solo cabe una fraccion
+            cout << cap << "/" << o[i].peso << " del objeto " << o[i].nombre << "\n";
+            total += o[i].valor * cap / o[i].peso;
+            cap = 0;
+        }
+    }
+    cout << "Valor total: " << total << "\n";
+}
+
+void antenas() {
+    int n, r;
+    cout << "Cantidad de casas: "; cin >> n;
+    vector<int> casas(n);
+    cout << "Posiciones: ";
+    for (int i = 0; i < n; i++) cin >> casas[i];
+    cout << "Cobertura R: "; cin >> r;
+
+    sort(casas.begin(), casas.end());
+
+    int i = 0, cantidad = 0;
+    cout << "Antenas en:\n";
+    while (i < n) {
+        int pos = casas[i] + r;         
+        cout << pos << "\n";
+        cantidad++;
+        while (i < n && casas[i] <= pos + r) i++;   
+    cout << "Cantidad total: " << cantidad << "\n";
+}
+
+int main() {
+    int op;
+    cout << "1) Mochila fraccional  2) Cobertura de antenas: ";
+    cin >> op;
+    if (op == 1) mochila();
+    else if (op == 2) antenas();
+    system("pause");                      
+    return 0;
+}
